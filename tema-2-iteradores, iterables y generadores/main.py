@@ -27,7 +27,7 @@ def ejercicio_1():
     for numero in generador_impares(20):
         producto *= numero
 
-    print(producto)
+    print(f"\nEl producto de los núemros del 1 al 20 es: {producto}")
 
 
 def ejercicio_2():
@@ -42,6 +42,9 @@ def ejercicio_2():
 
     total = list(map(sum, zip(pagos, iva)))
 
+    print("\nPrecio sin IVA")
+    print(" €, ".join(map(str, pagos)))
+    print("\nPrecios con el IVA del 10%")
     print(" €, ".join(map(str, total)))
 
 
@@ -70,8 +73,8 @@ def ejercicio_3():
 
     inversor = InversorListas(lista)
 
-    for valor in inversor:
-        print(valor)
+    print(f"\nLa lista {lista}")
+    print(f"\nInversa sería", *inversor, "\n")
 
 
 def limpiar_pantalla():
@@ -158,4 +161,4 @@ if __name__ == "__main__":
         elif ejercicio == "3":
             ejercicio_3()
 
-        input("Presione enter para continuar...")
+        input("\nPresione enter para continuar...")
