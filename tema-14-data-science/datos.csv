@@ -1,0 +1,7 @@
+tienda,cod_producto,stock_producto,coste_producto,precio_producto
+tienda1,1,100,200,350
+tienda1,2,32,800,1100
+tienda1,3,85,400,500
+tienda2,1,10,220,550
+tienda2,2,7,850,1200
+tienda2,3,5,450,550

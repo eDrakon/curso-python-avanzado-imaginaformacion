@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Erika Fernández Flask-SocketIO</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #1E1E1E;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #00ADB5; /* Color de acento */
+            border-bottom: 2px solid #00ADB5;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .data-card {
+            background-color: #2D2D2D;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .data-card p {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        .log-area {
+            height: 300px;
+            overflow-y: auto;
+            background-color: #000000;
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 15px;
+        }
+        .log-entry {
+            color: #00FF00;
+            margin-bottom: 5px;
+        }
+        .error-entry {
+            color: #FF6347;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>WebSocket ejercicio clima</h1>
+        <h2>Estado de la API de Clima</h2>
+
+        <div id="data-display" class="data-card">
+            <p><strong>Ubicación:</strong> <span id="location-data">Conectando...</span></p>
+            <p><strong>Temperatura:</strong> <span id="temp-data">--</span></p>
+            <p><strong>Hora de Observación:</strong> <span id="time-data">--</span></p>
+        </div>
+
+        <h2>Registro de Eventos (Logs)</h2>
+        <div id="log" class="log-area">
+            <p class="log-entry">Esperando conexión...</p>
+        </div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            const namespace = "/test";
+            const socket = io(namespace);
+
+            socket.on("connect", function () {
+                $("#log").append('<p class="log-entry">🟢 Conectado al servidor</p>');
+                socket.emit("my_event", { data: "Client connected." });
+            });
+
+            socket.on("my_api_response", function (msg) {
+                const count = msg.count;
+
+                if (msg.error) {
+                     $("#log").append(`<p class="log-entry error-entry">❌ Error #${count}: ${msg.data}</p>`);
+                     return;
+                }
+
+                const data = msg.data;
+
+                $("#location-data").text(data.localizacion);
+                $("#temp-data").text(`${data.temperatura}°C`);
+                $("#time-data").text(data.hora);
+
+
+                const logMessage = `[${data.hora}] ${data.localizacion}: ${data.temperatura}°C (Update: ${count})`;
+                $("#log").append(`<p class="log-entry">📈 ${logMessage}</p>`);
+
+                // Asegurar que el scroll del log esté siempre abajo
+                $("#log").scrollTop($("#log")[0].scrollHeight);
+            });
+
+
+            socket.on("disconnect", function() {
+                $("#log").append('<p class="log-entry error-entry">🔴 Desconectado. Reconectando...</p>');
+            });
+        });
+    </script>
+</body>
+</html>
